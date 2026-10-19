@@ -1,0 +1,1548 @@
+/* =============================================================
+   style.css — Ratan Naval Tata Interactive Showcase
+
+   Contents:
+    1.  Custom Properties (Design Tokens)
+    2.  Base Reset & Typography
+    3.  Skip Link
+    4.  Layout Utility (.container)
+    5.  Site Header
+    6.  Sections — Shared Styles
+    7.  Introduction Section
+    8.  Portrait Placeholder
+    9.  Timeline Section
+   10.  Ventures Section (Filter Bar, Grid, Cards)
+   11.  Impact & Takeaways Section
+   12.  Sources Section
+   13.  Site Footer
+   14.  Modal
+   15.  Focus Styles
+   16.  Reduced-Motion Override
+   17.  Responsive Breakpoints
+   ============================================================= */
+
+
+/* =============================================================
+   1. CUSTOM PROPERTIES (DESIGN TOKENS)
+   All colours, spacing, and radii are defined here.
+   Change a value once and it updates everywhere it is used.
+   ============================================================= */
+:root {
+  /* ── Colours ───────────────────────────────────────────── */
+  --color-navy:        #0D1B2A; /* Page background                          */
+  --color-navy-mid:    #162032; /* Card and section alternate backgrounds   */
+  --color-navy-light:  #1E2E42; /* Timeline items, subtle borders           */
+  --color-lesson-bg:   #1A2C40; /* Distinct bg for "lesson" cards           */
+  --color-gold:        #C9A84C; /* Primary accent — years, active, dividers */
+  --color-gold-light:  #E4C97A; /* Hover state for gold elements            */
+  --color-ivory:       #F5F0E8; /* Primary body text — ~12:1 on navy ✓     */
+  --color-ivory-muted: #B8B0A0; /* Secondary / muted text — ~4.6:1 ✓      */
+  --color-white:       #FFFFFF; /* Headings, modal text                     */
+  --color-focus:       #5BAFFA; /* Focus ring — distinct from gold          */
+
+  /* ── Spacing scale ─────────────────────────────────────── */
+  --space-xs:  0.5rem;   /*  8px */
+  --space-sm:  1rem;     /* 16px */
+  --space-md:  1.5rem;   /* 24px */
+  --space-lg:  3rem;     /* 48px */
+  --space-xl:  5rem;     /* 80px */
+
+  /* ── Border radius ─────────────────────────────────────── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* ── Maximum content width ─────────────────────────────── */
+  --max-width: 1100px;
+
+  /* ── Transition speeds ─────────────────────────────────── */
+  --t-fast:   150ms ease;
+  --t-normal: 250ms ease;
+  --t-slow:   350ms ease;
+}
+
+
+/* =============================================================
+   2. BASE RESET & TYPOGRAPHY
+   ============================================================= */
+
+/* Predictable box-sizing for every element */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* Smooth scrolling for in-page anchor links.
+     Disabled for users who prefer reduced motion (see section 16). */
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-navy);
+  color: var(--color-ivory);
+  /* system-ui picks the OS native font: San Francisco (Mac), Segoe UI (Windows), etc. */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Interactive Ambient Background Canvas ─────────────────── */
+.ambient-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.site-header,
+main,
+.site-footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* Serif font for headings gives an editorial, premium feel */
+h1, h2, h3, h4 {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  line-height: 1.25;
+  color: var(--color-white);
+}
+
+/* Base link style — gold on the dark background */
+a {
+  color: var(--color-gold);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--t-fast);
+}
+
+a:hover {
+  color: var(--color-gold-light);
+}
+
+/* Remove list markers from lists used for layout */
+.timeline-list,
+.sources-list {
+  list-style: none;
+}
+
+/* Responsive images */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ── Superscript source references ──────────────────────── */
+
+/* [N] reference links appear as small, muted superscripts */
+sup {
+  font-size: 0.7em;
+  line-height: 0;   /* Prevents superscripts from affecting line height */
+  vertical-align: super;
+}
+
+.source-ref {
+  color: var(--color-ivory-muted);
+  text-decoration: none;
+  margin-left: 1px;
+}
+
+.source-ref:hover {
+  color: var(--color-gold);
+  text-decoration: underline;
+}
+
+
+/* =============================================================
+   3. SKIP LINK
+   Visually off-screen by default; jumps into view on keyboard focus.
+   This is a standard accessibility technique for keyboard users.
+   ============================================================= */
+.skip-link {
+  position: absolute;
+  top: -100%;       /* Hidden above the viewport */
+  left: var(--space-sm);
+  background-color: var(--color-gold);
+  color: var(--color-navy);
+  font-weight: 700;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  z-index: 1000;
+  transition: top var(--t-fast);
+}
+
+/* Slides into the viewport when focused (Tab key on page load) */
+.skip-link:focus {
+  top: var(--space-sm);
+}
+
+
+/* =============================================================
+   4. LAYOUT UTILITY
+   ============================================================= */
+
+/* Centred content wrapper with side padding */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+
+/* =============================================================
+   5. SITE HEADER & FULL-HEADER RECTANGULAR HERO SLIDER
+   ============================================================= */
+.site-header {
+  position: relative;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl) 0 var(--space-lg);
+  text-align: center;
+  border-bottom: 2px solid var(--color-gold);
+  box-shadow: 0 4px 35px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  background-color: var(--color-navy);
+}
+
+/* Full-Header Rectangular Slider (Covers the entire header) */
+.header-hero-slider {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.header-hero-slides {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.header-hero-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 4s ease-out;
+  will-change: opacity, transform;
+}
+
+.header-hero-slide.is-active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 1;
+}
+
+.header-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  display: block;
+  filter: saturate(1.05) contrast(1.08);
+}
+
+/* Luxurious Dark Scrim & Radial Vignette for High-Contrast Readability */
+.header-hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(180deg,
+      rgba(13, 27, 42, 0.72) 0%,
+      rgba(13, 27, 42, 0.75) 45%,
+      rgba(13, 27, 42, 0.94) 100%),
+    radial-gradient(circle at 50% 45%,
+      rgba(13, 27, 42, 0.35) 0%,
+      rgba(13, 27, 42, 0.88) 85%);
+  backdrop-filter: blur(1.5px);
+  pointer-events: none;
+}
+
+.hero-container {
+  position: relative;
+  z-index: 5;
+  perspective: 1000px;
+  width: 100%;
+}
+
+/* Emblem ribbon above name */
+.hero-emblem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 1.15rem;
+  background: rgba(13, 27, 42, 0.75);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  border-radius: 2rem;
+  color: var(--color-gold);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-sm);
+  box-shadow: 0 0 16px rgba(201, 168, 76, 0.2);
+  backdrop-filter: blur(6px);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero-emblem:hover {
+  border-color: var(--color-gold);
+  box-shadow: 0 0 25px rgba(201, 168, 76, 0.4);
+  transform: translateY(-2px);
+}
+
+.emblem-sparkle {
+  color: var(--color-gold-light);
+  font-size: 0.85rem;
+}
+
+.site-header__label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-ivory-muted);
+  margin-bottom: var(--space-xs);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* Interactive Heading with metallic gold gradient & shimmer */
+.site-header__name.interactive-heading {
+  font-size: clamp(2.3rem, 6vw, 4.2rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  display: inline-block;
+  background: linear-gradient(120deg, #FFFFFF 0%, #F5F0E8 20%, #E4C97A 40%, #C9A84C 60%, #FFFFFF 80%, #E4C97A 100%);
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: goldShine 7s ease-in-out infinite;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.12s ease-out;
+  cursor: default;
+}
+
+@keyframes goldShine {
+  0%   { background-position: 0% center; }
+  50%  { background-position: 100% center; }
+  100% { background-position: 0% center; }
+}
+
+.site-header__dates {
+  color: var(--color-ivory);
+  font-size: 0.98rem;
+  margin-top: var(--space-xs);
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+/* Active Photo Era Caption */
+.header-era-box {
+  margin: var(--space-md) auto var(--space-xs);
+  display: flex;
+  justify-content: center;
+}
+
+.header-era-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-gold);
+  background: rgba(13, 27, 42, 0.85);
+  border: 1px solid rgba(201, 168, 76, 0.45);
+  padding: 0.35rem 1.15rem;
+  border-radius: 2rem;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 15px rgba(201, 168, 76, 0.2);
+  letter-spacing: 0.04em;
+  transition: all 0.35s ease;
+}
+
+/* Slider Indicators & Controls */
+.header-slider-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.header-slider-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+/* Rectangular indicator bars covering the progression */
+.header-slider-bar {
+  width: 32px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  cursor: pointer;
+  padding: 0;
+  transition: background-color var(--t-fast), width var(--t-fast), border-color var(--t-fast), box-shadow var(--t-fast);
+}
+
+.header-slider-bar:hover {
+  background: rgba(201, 168, 76, 0.65);
+  border-color: var(--color-gold);
+}
+
+.header-slider-bar.active {
+  width: 50px;
+  background: var(--color-gold);
+  border-color: var(--color-gold-light);
+  box-shadow: 0 0 12px rgba(201, 168, 76, 0.7);
+}
+
+.header-slider-pause-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(22, 32, 50, 0.8);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 2rem;
+  color: var(--color-ivory-muted);
+  font-size: 0.74rem;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  transition: all var(--t-fast);
+  backdrop-filter: blur(6px);
+}
+
+.header-slider-pause-btn:hover {
+  color: var(--color-gold);
+  border-color: var(--color-gold);
+  background: rgba(30, 46, 66, 0.95);
+}
+
+.hero-cta {
+  margin-top: var(--space-xs);
+}
+
+.hero-scroll-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.3rem;
+  border-radius: 2rem;
+  background: rgba(30, 46, 66, 0.7);
+  border: 1px solid var(--color-gold);
+  color: var(--color-gold);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+  transition: background-color var(--t-fast), color var(--t-fast), transform var(--t-fast), box-shadow var(--t-fast);
+}
+
+.hero-scroll-btn:hover {
+  background-color: var(--color-gold);
+  color: var(--color-navy);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(201, 168, 76, 0.35);
+}
+
+.scroll-arrow {
+  font-size: 1rem;
+  transition: transform 0.25s ease;
+}
+
+.hero-scroll-btn:hover .scroll-arrow {
+  transform: translateY(3px);
+}
+
+
+/* =============================================================
+   6. SECTIONS — SHARED STYLES
+   ============================================================= */
+.section {
+  padding: var(--space-xl) 0;
+}
+
+/* Semi-translucent backgrounds allow ambient light and constellation to gently show */
+.section--intro    { background: radial-gradient(circle at 85% 25%, rgba(201, 168, 76, 0.07) 0%, rgba(13, 27, 42, 0.92) 70%); backdrop-filter: blur(8px); }
+.section--timeline { background-color: rgba(22, 32, 50, 0.92); backdrop-filter: blur(8px); }
+.section--ventures { background-color: rgba(13, 27, 42, 0.92); backdrop-filter: blur(8px); }
+.section--impact   { background-color: rgba(22, 32, 50, 0.92); backdrop-filter: blur(8px); }
+.section--sources  { background-color: rgba(13, 27, 42, 0.95); backdrop-filter: blur(8px); }
+
+/* Section heading with a gold underline only as wide as the text */
+.section-heading {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 700;
+  color: var(--color-white);
+  margin-bottom: var(--space-xs);
+  padding-bottom: var(--space-xs);
+  border-bottom: 2px solid var(--color-gold);
+  display: inline-block;  /* Makes border-bottom only as wide as the text */
+}
+
+.section-subheading {
+  color: var(--color-ivory-muted);
+  font-size: 0.95rem;
+  margin-top: var(--space-xs);
+  margin-bottom: var(--space-lg);
+}
+
+
+/* =============================================================
+   7. INTRODUCTION SECTION & PHILOSOPHY AURA
+   ============================================================= */
+
+/* Two-column grid: text on the left, portrait on the right */
+.intro-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: var(--space-xl);
+  align-items: center;
+}
+
+.intro-body {
+  margin-bottom: var(--space-sm);
+  font-size: 1.05rem;
+  color: var(--color-ivory);
+  max-width: 65ch; /* ~65 characters per line — optimal for reading */
+}
+
+/* Aura quote — highlighting Ratan Tata's philosophy of kindness and national stewardship */
+.aura-quote {
+  margin: var(--space-md) 0;
+  padding: var(--space-sm) var(--space-md);
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.08) 0%, rgba(22, 32, 50, 0.6) 100%);
+  border-left: 3px solid var(--color-gold);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  box-shadow: inset 0 0 20px rgba(201, 168, 76, 0.04);
+}
+
+.aura-quote__text {
+  font-family: Georgia, serif;
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--color-white);
+  line-height: 1.6;
+  margin-bottom: var(--space-xs);
+}
+
+.aura-quote__cite {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--color-gold);
+  font-style: normal;
+  font-weight: 500;
+}
+
+/* ── 3D Stats Ribbon ─────────────────────────────────────── */
+.stats-ribbon {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.stat-card {
+  background: rgba(30, 46, 66, 0.6);
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s ease, border-color 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.stat-card:hover {
+  border-color: var(--color-gold);
+  box-shadow: 0 8px 24px rgba(201, 168, 76, 0.2);
+}
+
+.stat-card__number {
+  font-family: Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-gold);
+}
+
+.stat-card__label {
+  font-size: 0.78rem;
+  color: var(--color-ivory-muted);
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+
+/* =============================================================
+   8. PORTRAIT & LUMINOUS AURA (3D INTERACTION)
+   ============================================================= */
+.portrait-figure {
+  text-align: center;
+  position: relative;
+  perspective: 1000px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Ambient luminous aura glow surrounding the portrait */
+.portrait-aura {
+  position: relative;
+  display: inline-block;
+  padding: 7px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.8) 0%, rgba(30, 46, 66, 0.5) 50%, rgba(201, 168, 76, 0.9) 100%);
+  box-shadow: 0 0 40px rgba(201, 168, 76, 0.35), 0 15px 35px rgba(0, 0, 0, 0.6);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.portrait-aura:hover {
+  box-shadow: 0 0 55px rgba(201, 168, 76, 0.55), 0 20px 45px rgba(0, 0, 0, 0.7);
+}
+
+.portrait-image {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: calc(var(--radius-lg) - 4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.portrait-caption {
+  font-size: 0.82rem;
+  color: var(--color-ivory-muted);
+  max-width: 320px;
+  line-height: 1.5;
+  margin-top: var(--space-sm);
+}
+
+.portrait-credit {
+  font-size: 0.74rem;
+  color: var(--color-ivory-muted);
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.portrait-credit a {
+  color: var(--color-gold);
+}
+
+/* ── 3D Interactive Tilt & Specular Light Effect ─────────── */
+.interactive-3d {
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.12s cubic-bezier(0.1, 0.4, 0.2, 1), box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dynamic specular light gleam on hover */
+.interactive-3d::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: inherit;
+}
+
+.interactive-3d:hover::after {
+  opacity: 1;
+}
+
+
+/* =============================================================
+   9. TIMELINE SECTION
+   ============================================================= */
+.timeline-list {
+  padding: 0;
+  margin: 0;
+}
+
+.timeline-item {
+  position: relative;   /* Needed for absolute positioning of the dot (::before) */
+  /* Left padding makes room for the connecting line and milestone dot */
+  padding: 0 0 var(--space-lg) var(--space-lg);
+  /* Each item carries its own segment of the vertical timeline line */
+  border-left: 2px solid var(--color-gold);
+}
+
+/* The last item needs no line extending below it */
+.timeline-item:last-child {
+  border-left-color: transparent;
+  padding-bottom: 0;
+}
+
+/* Gold dot marker — sits on the vertical timeline line */
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  /*
+    Centering the 12px dot on the 2px left border:
+    Border center is ~1px to the left of the li content edge.
+    Half of 12px dot = 6px. So: left = -(1 + 6) = -7px.
+  */
+  left: -7px;
+  top: 0.35rem;
+  width: 12px;
+  height: 12px;
+  background-color: var(--color-gold);
+  border-radius: 50%;
+  /* Inner ring: colour matches the section background to create a "halo" */
+  border: 2px solid var(--color-navy-mid);
+}
+
+.timeline-year {
+  font-family: Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-gold);
+  margin-bottom: var(--space-xs);
+}
+
+.timeline-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-white);
+  margin-bottom: var(--space-xs);
+}
+
+.timeline-summary {
+  color: var(--color-ivory);
+  font-size: 0.97rem;
+  margin-bottom: var(--space-sm);
+}
+
+/* "Show more / Show less" toggle button */
+.timeline-toggle {
+  background: none;
+  border: 1px solid var(--color-gold);
+  color: var(--color-gold);
+  font-size: 0.85rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  margin-bottom: var(--space-sm);
+  transition: background-color var(--t-fast), color var(--t-fast);
+}
+
+.timeline-toggle:hover {
+  background-color: var(--color-gold);
+  color: var(--color-navy);
+}
+
+/* ── Accordion details panel ────────────────────────────────
+   Hidden by default (max-height: 0, overflow: hidden, opacity: 0).
+   JavaScript adds .is-open to expand it; CSS animates the transition.
+   The max-height trick: CSS cannot animate height: auto, so we animate
+   from 0 to a fixed maximum (25rem) that is safely larger than any content.
+   ─────────────────────────────────────────────────────────── */
+.timeline-details {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height var(--t-slow), opacity var(--t-normal);
+}
+
+.timeline-details.is-open {
+  max-height: 25rem; /* Enough for any expected content */
+  opacity: 1;
+}
+
+.timeline-details p {
+  padding: var(--space-sm);
+  background-color: var(--color-navy-light);
+  border-left: 3px solid var(--color-gold);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--color-ivory);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+
+/* =============================================================
+   10. VENTURES SECTION — SLIDER, FILTER BAR, GRID, CARDS
+   ============================================================= */
+
+/* ── Visual Showcase Slider (Carousel) ──────────────────── */
+.ventures-slider {
+  margin-bottom: var(--space-xl);
+  background: var(--color-navy-mid);
+  border: 1px solid var(--color-navy-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
+}
+
+.slider-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1.25rem;
+  background: rgba(30, 46, 66, 0.75);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+}
+
+.slider-header-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+.slider-controls-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.slider-counter {
+  font-size: 0.8rem;
+  color: var(--color-ivory-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.slider-pause-btn {
+  background: none;
+  border: 1px solid var(--color-navy-light);
+  color: var(--color-ivory-muted);
+  font-size: 0.78rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: border-color var(--t-fast), color var(--t-fast);
+}
+
+.slider-pause-btn:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+
+/* Viewport & Track */
+.slider-viewport {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 380px;
+  background: #000;
+  outline: none;
+}
+
+.slider-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+.slider-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.slider-slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Dark gradient overlay for text readability */
+.slider-slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(13, 27, 42, 0.2) 0%, rgba(13, 27, 42, 0.7) 50%, rgba(13, 27, 42, 0.95) 100%);
+}
+
+.slider-slide-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-md) var(--space-lg);
+  max-width: 800px;
+}
+
+.slider-slide-tag {
+  display: inline-block;
+  background: var(--color-gold);
+  color: var(--color-navy);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.slider-slide-title {
+  font-size: clamp(1.2rem, 3vw, 1.65rem);
+  color: var(--color-white);
+  font-weight: 700;
+  margin-bottom: var(--space-xs);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.slider-slide-desc {
+  font-size: 0.92rem;
+  color: var(--color-ivory);
+  line-height: 1.5;
+  margin-bottom: var(--space-xs);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.slider-slide-location {
+  font-size: 0.8rem;
+  color: var(--color-gold-light);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 500;
+}
+
+/* Slider Nav Arrows */
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(13, 27, 42, 0.75);
+  border: 1px solid var(--color-gold);
+  color: var(--color-gold);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  backdrop-filter: blur(4px);
+  transition: background-color var(--t-fast), color var(--t-fast), transform var(--t-fast);
+}
+
+.slider-arrow:hover {
+  background-color: var(--color-gold);
+  color: var(--color-navy);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.slider-arrow--prev { left: 1rem; }
+.slider-arrow--next { right: 1rem; }
+
+/* Slider Dots */
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem;
+  background: rgba(22, 32, 50, 0.9);
+}
+
+.slider-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid var(--color-gold);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color var(--t-fast), transform var(--t-fast);
+  padding: 0;
+}
+
+.slider-dot:hover {
+  background-color: rgba(201, 168, 76, 0.4);
+}
+
+.slider-dot.active {
+  background-color: var(--color-gold);
+  transform: scale(1.2);
+}
+
+/* ── Filter bar ─────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;       /* Buttons wrap to a new line on small screens */
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+}
+
+.filter-btn {
+  background-color: var(--color-navy-light);
+  color: var(--color-ivory-muted);
+  border: 1px solid var(--color-navy-light);
+  padding: 0.4rem 1rem;
+  border-radius: 2rem;   /* Pill shape */
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+}
+
+.filter-btn:hover {
+  border-color: var(--color-gold);
+  color: var(--color-ivory);
+}
+
+/* Active (selected) filter button */
+.filter-btn.active {
+  background-color: var(--color-gold);
+  color: var(--color-navy);
+  border-color: var(--color-gold);
+  font-weight: 600;
+}
+
+/* ── Venture grid ───────────────────────────────────────── */
+.ventures-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-md);
+}
+
+/* ── Individual venture card ────────────────────────────── */
+.venture-card {
+  background-color: var(--color-navy-mid);
+  border: 1px solid var(--color-navy-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  transition: transform var(--t-normal), box-shadow var(--t-normal), border-color var(--t-normal);
+  overflow: hidden;
+}
+
+.venture-card:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 20px rgba(201, 168, 76, 0.18);
+  border-color: var(--color-gold);
+}
+
+/* Card image box */
+.venture-card-image-box {
+  width: 100%;
+  height: 190px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: var(--space-xs);
+  background-color: var(--color-navy-light);
+}
+
+.venture-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.venture-card:hover .venture-card-img {
+  transform: scale(1.05);
+}
+
+.venture-card-location {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: rgba(13, 27, 42, 0.85);
+  color: var(--color-gold);
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+}
+
+/* Industry tag — small, capitalised label at the top of each card */
+.venture-industry-tag {
+  display: inline-block;
+  width: fit-content;
+  background-color: var(--color-navy-light);
+  color: var(--color-gold);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.venture-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+.venture-description {
+  color: var(--color-ivory-muted);
+  font-size: 0.9rem;
+  flex-grow: 1; /* Pushes the "View details" button to the bottom of the card */
+}
+
+.venture-connection {
+  font-size: 0.88rem;
+  color: var(--color-ivory);
+  border-top: 1px solid var(--color-navy-light);
+  padding-top: var(--space-xs);
+  margin-top: var(--space-xs);
+  line-height: 1.6;
+}
+
+/* Modal media image preview */
+.modal-media-box {
+  width: 100%;
+  height: 240px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: var(--space-md);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+}
+
+.modal-media-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.modal-media-location {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(13, 27, 42, 0.9);
+  color: var(--color-gold);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--color-gold);
+}
+
+/* "View details" button on each card — opens the modal */
+.venture-details-btn {
+  align-self: flex-start;
+  margin-top: var(--space-sm);
+  background-color: transparent;
+  border: 1px solid var(--color-gold);
+  color: var(--color-gold);
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color var(--t-fast), color var(--t-fast);
+}
+
+.venture-details-btn:hover {
+  background-color: var(--color-gold);
+  color: var(--color-navy);
+}
+
+
+/* =============================================================
+   11. IMPACT & TAKEAWAYS SECTION
+   ============================================================= */
+
+/* Side-by-side two-column layout for achievements vs lessons */
+.impact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.impact-column-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-white);
+  margin-bottom: var(--space-xs);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--color-navy-light);
+}
+
+.impact-column-note {
+  font-size: 0.85rem;
+  color: var(--color-ivory-muted);
+  margin-bottom: var(--space-md);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* Individual impact card */
+.impact-card {
+  background-color: var(--color-navy-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.impact-card:last-child {
+  margin-bottom: 0;
+}
+
+/* Lesson cards get a distinct left border to visually separate them */
+.impact-card--lesson {
+  background-color: var(--color-lesson-bg);
+  border-left: 3px solid var(--color-gold);
+}
+
+.impact-card-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-white);
+  margin-bottom: var(--space-xs);
+}
+
+.impact-card p {
+  font-size: 0.93rem;
+  color: var(--color-ivory);
+  line-height: 1.7;
+}
+
+/* "Developer's Interpretation" badge — clearly labels lessons as non-factual */
+.interpretation-tag {
+  display: block;          /* Own line */
+  width: fit-content;
+  background-color: rgba(201, 168, 76, 0.12); /* Translucent gold */
+  color: var(--color-gold);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-gold);
+  margin-bottom: var(--space-sm);
+}
+
+
+/* =============================================================
+   12. SOURCES SECTION
+   ============================================================= */
+
+/* Each source item is a numbered list entry with a bottom separator */
+.source-item {
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid var(--color-navy-light);
+  font-size: 0.9rem;
+  color: var(--color-ivory);
+  line-height: 1.6;
+}
+
+.source-item:last-child {
+  border-bottom: none;
+}
+
+.source-item a {
+  color: var(--color-gold);
+  font-weight: 500;
+}
+
+.source-publisher {
+  color: var(--color-ivory-muted);
+  font-size: 0.85rem;
+}
+
+/* Asterisk marking sources where the specific sub-page was not confirmed */
+.source-verify-note {
+  color: var(--color-ivory-muted);
+  font-size: 0.8rem;
+  font-style: italic;
+  cursor: help; /* title attribute provides tooltip explanation */
+}
+
+
+/* =============================================================
+   13. SITE FOOTER
+   ============================================================= */
+.site-footer {
+  background-color: var(--color-navy-mid);
+  border-top: 1px solid var(--color-navy-light);
+  padding: var(--space-lg) 0;
+  text-align: center;
+}
+
+.site-footer p {
+  font-size: 0.85rem;
+  color: var(--color-ivory-muted);
+  max-width: 65ch;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+
+/* =============================================================
+   14. MODAL
+   ============================================================= */
+
+/* Full-screen backdrop overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;               /* Shorthand for top: 0; right: 0; bottom: 0; left: 0 */
+  background-color: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+  padding: var(--space-sm);
+  animation: fadeIn var(--t-normal) ease;
+}
+
+/*
+  When the `hidden` HTML attribute is set, display:none hides the element
+  completely (visually and from assistive technology).
+  We also keep aria-hidden="true" for clarity.
+*/
+.modal-overlay[hidden] {
+  display: none;
+}
+
+/* The white-ish panel inside the overlay */
+.modal-panel {
+  position: relative;
+  background-color: var(--color-navy-light);
+  border: 1px solid var(--color-gold);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  max-width: 620px;
+  width: 100%;
+  max-height: 90vh;       /* Never taller than 90% of viewport height */
+  overflow-y: auto;       /* Scrollable if content is very long */
+}
+
+/* Close button — absolute in top-right corner of the panel */
+.modal-close {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  background: none;
+  border: 1px solid var(--color-ivory-muted);
+  color: var(--color-ivory-muted);
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color var(--t-fast), color var(--t-fast);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.modal-close:hover {
+  border-color: var(--color-ivory);
+  color: var(--color-ivory);
+}
+
+/* Content area populated by JavaScript */
+.modal-content {
+  margin-top: var(--space-sm); /* Prevents content overlapping the close button */
+}
+
+/* ── Styles for elements JavaScript creates inside the modal ── */
+
+/* Venture name — the dialog's accessible label (aria-labelledby points here) */
+.modal-venture-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-white);
+  margin-bottom: var(--space-sm);
+}
+
+/* Section within the modal (About, Connection, Link) */
+.modal-section {
+  margin-top: var(--space-md);
+}
+
+.modal-section-heading {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: var(--space-xs);
+}
+
+.modal-section p {
+  color: var(--color-ivory);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+/* Official website call-to-action link inside modal */
+.modal-official-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-gold);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 1px solid var(--color-gold);
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: background-color var(--t-fast), color var(--t-fast);
+}
+
+.modal-official-link:hover {
+  background-color: var(--color-gold);
+  color: var(--color-navy);
+}
+
+/* Fade-in animation for the modal overlay */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+
+/* =============================================================
+   15. FOCUS STYLES
+   :focus-visible shows the ring only for keyboard navigation,
+   not for mouse clicks — following modern best practice.
+   The ring colour (sky blue) is distinct from the gold accent
+   to make it immediately recognisable.
+   ============================================================= */
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* Remove default browser outline when using a mouse */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+
+/* =============================================================
+   16. REDUCED-MOTION OVERRIDE
+   Respects the user's OS-level "reduce motion" accessibility setting.
+   All transition and animation durations collapse to near-instant.
+   The !important overrides inline styles and specificity conflicts.
+   ============================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto; /* Disable smooth scrolling */
+  }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration:  0.01ms !important;
+  }
+  .ambient-canvas {
+    display: none !important;
+  }
+}
+
+
+/* =============================================================
+   17. RESPONSIVE BREAKPOINTS
+   ============================================================= */
+
+/* ── Tablet (≤ 768px) ───────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* Stack intro text and portrait vertically */
+  .intro-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Portrait appears above the text on smaller screens */
+  .portrait-figure {
+    order: -1;
+  }
+
+  /* Stack impact columns vertically */
+  .impact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Tighten section vertical padding */
+  .section {
+    padding: var(--space-lg) 0;
+  }
+
+  .site-header {
+    padding: var(--space-md) 0;
+  }
+}
+
+/* ── Mobile (≤ 480px) ───────────────────────────────────── */
+@media (max-width: 480px) {
+
+  .container {
+    padding: 0 var(--space-sm);
+  }
+
+  .stats-ribbon {
+    grid-template-columns: 1fr;
+  }
+
+  /* Single-column venture grid on phones */
+  .ventures-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-panel {
+    padding: var(--space-md);
+  }
+
+  .filter-btn {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.7rem;
+  }
+
+  /* Slider adjustments on mobile phones */
+  .slider-viewport {
+    height: 310px;
+  }
+
+  .slider-slide-content {
+    padding: var(--space-sm);
+  }
+
+  .slider-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+}

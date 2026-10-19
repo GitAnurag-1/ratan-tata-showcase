@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    index.html — Ratan Naval Tata Interactive Showcase
+    ─────────────────────────────────────────────────────
+    This file provides the semantic HTML structure only.
+    - All visual styling is in style.css
+    - All data and rendering logic is in script.js
+  -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+        content="An interactive educational showcase of the life, business journey,
+                 and contributions of Ratan Naval Tata (1937–2024)." />
+  <title>Ratan Naval Tata — Interactive Showcase</title>
+  <link rel="stylesheet" href="style.css" />
+  <!--
+    defer: the script runs after the HTML is fully parsed.
+    This removes the need to place the <script> tag at the bottom of <body>.
+  -->
+  <script src="script.js" defer></script>
+</head>
+<body>
+
+  <!--
+    SKIP LINK
+    The very first focusable element on the page.
+    Keyboard users press Tab then Enter to jump past the header and
+    go directly to the main content. Visually hidden until focused.
+  -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!--
+    AMBIENT INTERACTIVE BACKGROUND CANVAS
+    A lightweight, vanilla JS animated star/light field.
+    aria-hidden="true": purely visual/decorative background.
+  -->
+  <canvas id="ambient-canvas" class="ambient-canvas" aria-hidden="true"></canvas>
+
+  <!-- ===== SITE HEADER ===== -->
+  <header class="site-header" id="site-header" role="banner" aria-label="Hero header with historical photo showcase">
+
+    <!--
+      FULL-HEADER RECTANGULAR PHOTO SLIDER (AUTOPLAY EVERY 3 SECONDS)
+      Spans the entire header with high-resolution rectangular photographs
+      of Ratan Tata across key historical eras, transitioning automatically every 3s.
+    -->
+    <div class="header-hero-slider"
+         id="header-hero-slider"
+         role="region"
+         aria-roledescription="carousel"
+         aria-label="Full-header photo showcase of Ratan Naval Tata across different eras">
+
+      <div class="header-hero-slides" id="header-hero-slides">
+        <!-- Rendered by JavaScript: multiple rectangular images covering the whole header -->
+      </div>
+
+      <!-- Cinematic dark tint and vignette scrim for high contrast typography -->
+      <div class="header-hero-scrim" aria-hidden="true"></div>
+    </div>
+
+    <!-- Header Content floating gracefully over the full rectangular background slides -->
+    <div class="container hero-container">
+      <div class="hero-emblem" aria-hidden="true">
+        <span class="emblem-sparkle">&#10022;</span>
+        <span>A Legacy of Integrity, Enterprise &amp; Humility</span>
+        <span class="emblem-sparkle">&#10022;</span>
+      </div>
+
+      <p class="site-header__label">Interactive Entrepreneur Showcase</p>
+
+      <h1 class="site-header__name interactive-heading" id="hero-heading">
+        Ratan Naval Tata
+      </h1>
+
+      <p class="site-header__dates">
+        <time datetime="1937-12-28">28 December 1937</time>
+        &ndash;
+        <time datetime="2024-10-09">9 October 2024</time>
+      </p>
+
+      <!-- Active Photo Era Caption & Live Status -->
+      <div class="header-era-box">
+        <span class="header-era-badge" id="header-era-badge" aria-live="polite">
+          Commemorative Legacy Portrait (1937–2024)
+        </span>
+      </div>
+
+      <!-- Rectangular Slide Indicators & Controls -->
+      <div class="header-slider-controls">
+        <div class="header-slider-progress" id="header-slider-dots" role="tablist" aria-label="Header photo navigation">
+          <!-- Populated by JavaScript: rectangular indicator bars -->
+        </div>
+
+        <button type="button"
+                id="header-slider-pause-btn"
+                class="header-slider-pause-btn"
+                aria-label="Pause automatic slide transition">
+          <span class="pause-icon" aria-hidden="true">&#10074;&#10074;</span>
+          <span class="btn-text">3s Autoplay</span>
+        </button>
+      </div>
+
+      <div class="hero-cta">
+        <a href="#intro-heading" class="hero-scroll-btn">
+          <span class="scroll-arrow" aria-hidden="true">&#8595;</span>
+          <span>Explore Life &amp; Legacy</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main id="main-content">
+
+    <!-- ─────────────────────────────────────────────
+         SECTION 1: Introduction
+         Static text and a portrait placeholder.
+         ───────────────────────────────────────────── -->
+    <section class="section section--intro" aria-labelledby="intro-heading">
+      <div class="container intro-grid">
+
+        <div class="intro-text">
+          <h2 id="intro-heading" class="section-heading">Introduction &amp; Legacy</h2>
+
+          <p class="intro-body">
+            Ratan Naval Tata served as Chairman of Tata Sons — the principal
+            holding company of the Tata Group — from March 1991 to December 2012.
+            Under his leadership, a predominantly India-focused conglomerate
+            expanded into a global enterprise operating in over 100 countries,
+            with more than 65% of revenues derived from international markets
+            by the end of his tenure.
+            <sup><a href="#source-1" class="source-ref" aria-label="Source 1">[1]</a></sup>
+          </p>
+
+          <p class="intro-body">
+            He oversaw landmark acquisitions including Tetley (2000),
+            Corus Group (2007), and Jaguar Land Rover (2008), and championed
+            the Tata Indica (1998) — India's first fully indigenous passenger car.
+            He was awarded the Padma Bhushan (2000) and the Padma Vibhushan
+            (2008) by the Government of India.
+            <sup><a href="#source-9" class="source-ref" aria-label="Source 9">[9]</a></sup>
+          </p>
+
+          <p class="intro-body">
+            Renowned worldwide for his humility, ethics, and compassion, he directed
+            the majority of his life's work toward nation-building. After retiring from
+            the chairmanship, he oversaw the Tata Trusts — philanthropic organisations
+            holding approximately 66% of Tata Sons that channel group wealth into
+            cancer healthcare, rural development, drinking water, and education. He passed
+            away in Mumbai on 9 October 2024, honoured with a state funeral by the Government of India.
+            <sup><a href="#source-2" class="source-ref" aria-label="Source 2">[2]</a></sup>
+          </p>
+
+          <!-- Philosophy block embodying the aura and kindness of Ratan Tata -->
+          <blockquote class="aura-quote" aria-label="Guiding Philosophy">
+            <p class="aura-quote__text">&ldquo;What comes from the people must go back to the people many times over.&rdquo;</p>
+            <cite class="aura-quote__cite">— Founding philosophy of the Tata Trusts, upheld throughout Ratan Tata's stewardship <sup><a href="#source-2" class="source-ref" aria-label="Source 2">[2]</a></sup></cite>
+          </blockquote>
+
+          <!-- 3D Stat Badges -->
+          <div class="stats-ribbon" role="region" aria-label="Key highlights of leadership">
+            <div class="stat-card interactive-3d">
+              <span class="stat-card__number">21 Years</span>
+              <span class="stat-card__label">Chairman of Tata Sons (1991–2012)</span>
+            </div>
+            <div class="stat-card interactive-3d">
+              <span class="stat-card__number">~66%</span>
+              <span class="stat-card__label">Equity dedicated to Philanthropy via Trusts</span>
+            </div>
+            <div class="stat-card interactive-3d">
+              <span class="stat-card__number">100+</span>
+              <span class="stat-card__label">Countries with active operations</span>
+            </div>
+            <div class="stat-card interactive-3d">
+              <span class="stat-card__number">Padma Vibhushan</span>
+              <span class="stat-card__label">Second-highest civilian honour (2008)</span>
+            </div>
+          </div>
+        </div>
+
+        <!--
+          PORTRAIT
+          Verified photograph: File:Ratan Tata (1937-2024).jpg from Wikimedia Commons.
+          Attribution: Sarvajanik Puralekh (Flickr / Wikimedia Commons).
+          License: Creative Commons Attribution-ShareAlike 2.0 Generic (CC BY-SA 2.0).
+        -->
+        <figure class="portrait-figure interactive-3d" id="portrait-card">
+          <div class="portrait-aura">
+            <img src="ratan_tata.jpg"
+                 alt="Portrait photograph of Ratan Naval Tata"
+                 class="portrait-image"
+                 width="280"
+                 height="350"
+                 loading="eager" />
+          </div>
+          <figcaption class="portrait-caption">
+            <strong>Ratan Naval Tata</strong> (1937–2024)<br />
+            <span class="portrait-credit">
+              Photo credit: Sarvajanik Puralekh via <a href="https://commons.wikimedia.org/wiki/File:Ratan_Tata_(1937-2024).jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> / Flickr.<br />
+              Licensed under <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 2.0</a>.
+            </span>
+          </figcaption>
+        </figure>
+
+      </div>
+    </section>
+
+
+    <!-- ─────────────────────────────────────────────
+         SECTION 2: Interactive Timeline
+         JavaScript renders the <li> items into #timeline-list.
+         ───────────────────────────────────────────── -->
+    <section class="section section--timeline" aria-labelledby="journey-heading">
+      <div class="container">
+        <h2 id="journey-heading" class="section-heading">The Journey</h2>
+        <p class="section-subheading">A chronological record of verified milestones</p>
+
+        <!-- JS renders timeline <li> items here -->
+        <ol class="timeline-list"
+            id="timeline-list"
+            aria-label="Career milestones of Ratan Naval Tata">
+        </ol>
+      </div>
+    </section>
+
+
+    <!-- ─────────────────────────────────────────────
+         SECTION 3: Companies and Ventures
+         Includes filter buttons and a card grid.
+         JavaScript renders the <article> cards into #ventures-grid.
+         ───────────────────────────────────────────── -->
+    <section class="section section--ventures" aria-labelledby="ventures-heading">
+      <div class="container">
+        <h2 id="ventures-heading" class="section-heading">Companies &amp; Ventures</h2>
+        <p class="section-subheading">
+          Selected organisations, manufacturing plants, tech campuses, and philanthropic trusts
+        </p>
+
+        <!--
+          VISUAL SHOWCASE SLIDER
+          An accessible, interactive carousel showcasing factories, campuses, and hospitals.
+          - Supports Next/Prev controls, pagination dots, play/pause, and keyboard navigation.
+        -->
+        <div class="ventures-slider"
+             id="ventures-slider"
+             role="region"
+             aria-roledescription="carousel"
+             aria-label="Enterprises, Plants and Philanthropic Institutions">
+
+          <div class="slider-header-bar">
+            <span class="slider-header-title">Enterprises, Plants &amp; Trusts Visual Showcase</span>
+            <div class="slider-controls-top">
+              <span class="slider-counter" id="slider-counter" aria-live="polite">Slide 1 of 5</span>
+              <button class="slider-pause-btn" id="slider-pause-btn" aria-label="Pause automatic slide rotation">
+                <span class="pause-icon" aria-hidden="true">&#10074;&#10074;</span> Pause
+              </button>
+            </div>
+          </div>
+
+          <div class="slider-viewport" id="slider-viewport" tabindex="0" aria-label="Slide viewer — use Left and Right arrow keys to navigate">
+            <div class="slider-track" id="slider-track">
+              <!-- JavaScript renders slides here -->
+            </div>
+
+            <!-- Previous and Next arrows -->
+            <button class="slider-arrow slider-arrow--prev" id="slider-prev" aria-label="Previous slide">
+              <span aria-hidden="true">&#10094;</span>
+            </button>
+            <button class="slider-arrow slider-arrow--next" id="slider-next" aria-label="Next slide">
+              <span aria-hidden="true">&#10095;</span>
+            </button>
+          </div>
+
+          <!-- Pagination dots -->
+          <div class="slider-dots" id="slider-dots" role="tablist" aria-label="Slide selection dots">
+            <!-- JS generates dots here -->
+          </div>
+        </div>
+
+        <!--
+          FILTER BUTTONS
+          role="group" + aria-label groups these for screen readers.
+          Each button has aria-pressed to communicate its active state.
+          JavaScript updates aria-pressed when the active button changes.
+        -->
+        <div class="filter-bar"
+             role="group"
+             aria-label="Filter ventures by industry">
+          <button class="filter-btn active" data-filter="all"           aria-pressed="true">All</button>
+          <button class="filter-btn"        data-filter="Technology"    aria-pressed="false">Technology</button>
+          <button class="filter-btn"        data-filter="Manufacturing" aria-pressed="false">Manufacturing</button>
+          <button class="filter-btn"        data-filter="Automotive"    aria-pressed="false">Automotive</button>
+          <button class="filter-btn"        data-filter="Philanthropy"  aria-pressed="false">Philanthropy</button>
+          <button class="filter-btn"        data-filter="Consumer Goods" aria-pressed="false">Consumer Goods</button>
+        </div>
+
+        <!--
+          aria-live="polite": screen readers announce updates when cards
+          change after a filter is applied, without interrupting the user.
+        -->
+        <!-- JS renders venture <article> cards here -->
+        <div class="ventures-grid"
+             id="ventures-grid"
+             aria-live="polite"
+             aria-label="Filtered venture cards">
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ─────────────────────────────────────────────
+         SECTION 4: Impact and Takeaways
+         Static content — two columns: facts and lessons.
+         Lessons are clearly labelled as developer interpretations.
+         ───────────────────────────────────────────── -->
+    <section class="section section--impact" aria-labelledby="impact-heading">
+      <div class="container">
+        <h2 id="impact-heading" class="section-heading">Impact &amp; Takeaways</h2>
+
+        <div class="impact-grid">
+
+          <!-- Column A: Documented historical achievements -->
+          <div class="impact-column">
+            <h3 class="impact-column-heading">Documented Achievements</h3>
+            <p class="impact-column-note">
+              The following are historical facts supported by the cited sources.
+            </p>
+
+            <article class="impact-card">
+              <h4 class="impact-card-heading">Global Expansion of the Tata Group</h4>
+              <p>
+                During Ratan Tata's 21-year chairmanship (1991–2012), the Tata Group's
+                revenues are widely reported to have grown approximately 40 times, with
+                more than 65% of revenues derived from international markets by the end
+                of his tenure. These figures are noted as reported estimates rather than
+                independently audited data.
+                <sup><a href="#source-1" class="source-ref" aria-label="Source 1">[1]</a></sup>
+                <sup><a href="#source-3" class="source-ref" aria-label="Source 3">[3]</a></sup>
+              </p>
+            </article>
+
+            <article class="impact-card">
+              <h4 class="impact-card-heading">National Civilian Honours</h4>
+              <p>
+                Ratan Tata received the Padma Bhushan — India's third-highest civilian
+                honour — in 2000, and the Padma Vibhushan — India's second-highest
+                civilian honour — in 2008, in the category of Trade and Industry.
+                The 2008 award was officially announced by the Ministry of Home Affairs
+                on 25 January 2008.
+                <sup><a href="#source-9" class="source-ref" aria-label="Source 9">[9]</a></sup>
+              </p>
+            </article>
+          </div>
+
+          <!-- Column B: Developer's interpretations — explicitly labelled -->
+          <div class="impact-column">
+            <h3 class="impact-column-heading">Lessons for Readers</h3>
+            <p class="impact-column-note">
+              The following are the <strong>developer's interpretations</strong> of
+              patterns observed in documented events. They are not statements by
+              Ratan Tata and should not be treated as such.
+            </p>
+
+            <article class="impact-card impact-card--lesson">
+              <span class="interpretation-tag"
+                    aria-label="This is the developer's interpretation, not a statement by Ratan Tata">
+                Developer's Interpretation
+              </span>
+              <h4 class="impact-card-heading">Think in Decades, Not Quarters</h4>
+              <p>
+                Documented decisions — the Tetley acquisition (2000) and the JLR
+                purchase (2008), both of which initially faced market scepticism —
+                suggest that large, long-term bets can produce outcomes that diverge
+                significantly from immediate reactions. This is the developer's reading
+                of historical events, not a principle Ratan Tata is documented to have stated.
+              </p>
+            </article>
+
+            <article class="impact-card impact-card--lesson">
+              <span class="interpretation-tag"
+                    aria-label="This is the developer's interpretation, not a statement by Ratan Tata">
+                Developer's Interpretation
+              </span>
+              <h4 class="impact-card-heading">Ground-Level Experience Informs Leadership</h4>
+              <p>
+                The documented fact that Ratan Tata began his career on the shop floor
+                at Tata Steel in 1962 — nearly three decades before becoming Chairman
+                in 1991 — may suggest that operational experience at lower levels can
+                shape leadership judgement. This is an interpretation of documented
+                biographical facts, not a lesson Ratan Tata is documented to have stated.
+              </p>
+            </article>
+          </div>
+
+        </div><!-- .impact-grid -->
+      </div>
+    </section>
+
+
+    <!-- ─────────────────────────────────────────────
+         SECTION 5: Sources
+         JavaScript renders the numbered <li> entries into #sources-list.
+         Each entry gets id="source-N" so [N] links jump here correctly.
+         ───────────────────────────────────────────── -->
+    <section class="section section--sources" aria-labelledby="sources-heading">
+      <div class="container">
+        <h2 id="sources-heading" class="section-heading">Sources</h2>
+        <p class="section-subheading">
+          Every factual claim on this page corresponds to a numbered source below.
+          Sources marked with an asterisk (*) use a confirmed organisational
+          homepage where the specific sub-page URL could not be directly verified.
+        </p>
+
+        <!-- JS renders <li id="source-N"> entries here -->
+        <ol class="sources-list" id="sources-list"></ol>
+      </div>
+    </section>
+
+  </main><!-- /#main-content -->
+
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <p>
+        This page is an educational student project. All factual claims are sourced
+        and referenced. Lessons in the &ldquo;Impact &amp; Takeaways&rdquo; section
+        are the developer's interpretations of documented events and do not represent
+        statements by Ratan Naval Tata.
+      </p>
+    </div>
+  </footer>
+
+
+  <!--
+    ===== MODAL =====
+    Always present in the DOM. Hidden by default via the `hidden` attribute.
+    JavaScript shows it by removing `hidden` and setting aria-hidden="false".
+
+    role="dialog"       — tells screen readers this is an overlay dialog
+    aria-modal="true"   — prevents virtual cursor from wandering behind the dialog
+    aria-labelledby     — connects the dialog to the venture name heading inside it
+    hidden              — hides the element visually and from assistive technology
+    aria-hidden="true"  — belt-and-suspenders: also hidden from AT while closed
+  -->
+  <div id="modal-overlay"
+       class="modal-overlay"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="modal-title"
+       aria-hidden="true"
+       hidden>
+
+    <div class="modal-panel" id="modal-panel">
+
+      <button class="modal-close"
+              id="modal-close"
+              aria-label="Close venture details panel">
+        <span aria-hidden="true">&#10005;</span> Close
+      </button>
+
+      <!--
+        JavaScript populates this div when a card's "View details" button is clicked.
+        It is cleared each time the modal closes.
+      -->
+      <div id="modal-content" class="modal-content"></div>
+
+    </div><!-- /.modal-panel -->
+  </div><!-- /#modal-overlay -->
+
+</body>
+</html>
